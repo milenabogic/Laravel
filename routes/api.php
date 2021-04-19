@@ -23,9 +23,9 @@ use App\Http\Controllers\API\UserController;
 Route::post('register', [RegisterController::class, 'register']);
 Route::post('login', [RegisterController::class, 'login']);
      
-/* Route::middleware('auth:api')->group( function () { */
-    Route::resource('employees', CreateEmployeesTableController::class);
-    Route::resource('clients', CreateClientsTableController::class);
-    Route::resource('time_sheets',  CreateTimeSheetsTableController::class); 
-    Route::resource('projects',  CreateProjectsTableController::class);
- /* }); */
+// Route::middleware('auth:api')->group( function () { 
+    Route::resource('employees', EmployeesController::class);
+    Route::resource('clients', ClientsController::class);
+    Route::resource('time_sheets',  TimeSheetsController::class); 
+    Route::resource('projects',  ProjectsController::class);
+ // }); 
