@@ -21,6 +21,7 @@ class CreateEmployeesTable extends Migration
             $table->string('status');
             $table->string('role');
             $table->double('hours_per_week');
+            $table->timestamps();
         });
     }
 
@@ -31,6 +32,6 @@ class CreateEmployeesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('time_sheets');
+        Schema::dropIfExists('employees');
     }
 }
