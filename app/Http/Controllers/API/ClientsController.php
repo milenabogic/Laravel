@@ -47,7 +47,7 @@ class ClientsController extends BaseController
     }
     
     public function update(Request $request, Clients $clients)
-    {
+    { 
         $input = $request->all();
    
         $validator = Validator::make($input, [
