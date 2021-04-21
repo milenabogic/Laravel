@@ -5,71 +5,50 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Employees;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Validator;
 use App\Http\Resources\Employees as EmployeesResource;
    
 class EmployeesController extends BaseController
 {
-    public function index()
+    public function register(Request $request)
     {
-        $employees = Employees::all();
-    
-        return $this->sendResponse(EmployeesResource::collection($employees), 'Employees retrieved successfully.');
-    }
-    
-    public function store(Request $request)
-    {
-        $input = $request->all();
-   
-        $validator = Validator::make($input, [
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'detail' => 'required'
+            'username' => 'required',
+            'email' => 'required|email',
+            'status' => 'required',
+            'role' => 'required',
+            'hours_per_week' => 'required'
         ]);
-   
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
-        }
-   
-        $employees = Employees::create($input);
-   
-        return $this->sendResponse(new EmployeesResource($employees), 'Employees created successfully.');
-    } 
-   
-    public function show($id)
-    {
-        $employees = Employees::find($id);
-  
-        if (is_null($employees)) {
-            return $this->sendError('Employees not found.');
-        }
-   
-        return $this->sendResponse(new EmployeesResource($employees), 'Employees retrieved successfully.');
-    }
+
     
-    public function update(Request $request, Employees $employees)
-    {
-        $input = $request->all();
-   
-        $validator = Validator::make($input, [
-            'name' => 'required',
-            'detail' => 'required'
-        ]);
-   
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return $this->sendError('Validation Error.', $validator->errors());
         }
-   
-        $employees->name = $input['name'];
-        $employees->detail = $input['detail'];
-        $employees->save();
-   
-        return $this->sendResponse(new EmployeesResource($employees), 'Employees updated successfully.');
+
+        $input = $request->all();
+
+     //   $input['password'] = bcrypt($input['password']); nemamo password i ne mozemo ga koristiti
+        $input['token'] = Str::random(100);
+
+        $employee = Employees::create($input);
+
+        return $this->sendResponse(['token' => $employee->token], "Employee created");
     }
-   
-    public function destroy(Employees $employees)
-    {
-        $employees->delete();
-   
-        return $this->sendResponse([], 'Employees deleted successfully.');
+
+    public function login(Request $request)
+    {    //'password' => $request->password treba dodati pored email-a kada u tabeli imamo password
+        if(Auth::attempt(['email' => $request->email])){
+            $employee = Auth::employee();
+            $employee['token'] =  $employee->createToken('MyApp')-> accessToken;
+            $employee['name'] =  $employee->name;
+
+            return $this->sendResponse($success, 'Employee login successfully.');
+        }
+        else{
+            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+        }
     }
 }
