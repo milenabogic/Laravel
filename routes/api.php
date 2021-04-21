@@ -23,6 +23,9 @@ use App\Http\Controllers\API\UserController;
 Route::post('register', [RegisterController::class, 'register']);
 Route::post('login', [RegisterController::class, 'login']);
 
+Route::post('register', [EmployeesController::class, 'register']);
+Route::post('login', [EmployeesController::class, 'login']);
+
 Route::middleware('custom_auth')->group(function () {
     Route::get('/projects', function () {
         return "Uspesno!";
