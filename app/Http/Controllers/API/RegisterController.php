@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
-use App\Models\Employees;
+use App\Models\Clients;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Validator;
@@ -15,11 +15,10 @@ class RegisterController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'username' => 'required',
-            'email' => 'required|email',
-            'status' => 'required',
-            'role' => 'required',
-            'hours_per_week' => 'required',
+            'address' => 'required',
+            'city' => 'required|email',
+            'post_code' => 'required',
+            'state' => 'required',
         ]);
 
         if($validator->fails()){
@@ -31,19 +30,19 @@ class RegisterController extends BaseController
      //   $input['password'] = bcrypt($input['password']); nemamo password i ne mozemo ga koristiti
         $input['token'] = Str::random(100);
 
-        $employee = Employees::create($input);
+        $client = Clients::create($input);
 
-        return $this->sendResponse(['token' => $employee->token], "Employee created");
+        return $this->sendResponse(['token' => $employee->token], "Client created");
     }
 
     public function login(Request $request)
     {    //'password' => $request->password treba dodati pored email-a kada u tabeli imamo password
         if(Auth::attempt(['email' => $request->email])){
-            $employee = Auth::employee();
-            $success['token'] =  $employee->createToken('MyApp')-> accessToken;
-            $success['name'] =  $employee->name;
+            $client = Auth::client();
+            $client['token'] =  $client->createToken('MyApp')-> accessToken;
+            $client['name'] =  $client->name;
 
-            return $this->sendResponse($success, 'Employee login successfully.');
+            return $this->sendResponse($success, 'Client login successfully.');
         }
         else{
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
