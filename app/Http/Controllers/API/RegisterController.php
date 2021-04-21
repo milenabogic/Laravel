@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
-use App\Models\Clients;
+use App\Models\Projects;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Validator;
@@ -14,11 +14,11 @@ class RegisterController extends BaseController
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'address' => 'required',
-            'city' => 'required|email',
-            'post_code' => 'required',
-            'state' => 'required',
+            'project' => 'required',
+            'name_client' => 'required',
+            'name_employee' => 'required',
+            'status_project' => 'required',
+            'archived_project' => 'required',
         ]);
 
         if($validator->fails()){
@@ -30,12 +30,12 @@ class RegisterController extends BaseController
      //   $input['password'] = bcrypt($input['password']); nemamo password i ne mozemo ga koristiti
         $input['token'] = Str::random(100);
 
-        $client = Clients::create($input);
+        $project = Projects::create($input);
 
-        return $this->sendResponse(['token' => $employee->token], "Client created");
+        return $this->sendResponse(['token' => $project->token], "Project created");
     }
 
-    public function login(Request $request)
+    /*public function login(Request $request)
     {    //'password' => $request->password treba dodati pored email-a kada u tabeli imamo password
         if(Auth::attempt(['email' => $request->email])){
             $client = Auth::client();
@@ -47,5 +47,5 @@ class RegisterController extends BaseController
         else{
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         }
-    }
+    }*/
 }

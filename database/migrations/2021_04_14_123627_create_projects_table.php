@@ -15,13 +15,14 @@ class CreateProjectsTable extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id('id')->index();
-            $table->integer('employee_id')->references('id')->on('employees');
-            $table->integer('client_id')->references('id')->on('clients');
+           // $table->integer('employee_id')->references('id')->on('employees');
+           // $table->integer('client_id')->references('id')->on('clients');
             $table->string('project');
             $table->string('name_client');
             $table->string('name_employee');
             $table->string('status_project');
             $table->string('archived_project');
+            $table->timestamps();
         });
     }
 
