@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
-use App\Models\Employee;
+use App\Models\Employees;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Validator;
@@ -28,22 +28,22 @@ class RegisterController extends BaseController
 
         $input = $request->all();
 
-        $input['password'] = bcrypt($input['password']);
+     //   $input['password'] = bcrypt($input['password']); nemamo password i ne mozemo ga koristiti
         $input['token'] = Str::random(100);
 
-        $user = User::create($input);
+        $employee = Employees::create($input);
 
-        return $this->sendResponse(['token' => $user->token], "User created");
+        return $this->sendResponse(['token' => $employee->token], "Employee created");
     }
 
     public function login(Request $request)
-    {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
-            $user = Auth::user();
-            $success['token'] =  $user->createToken('MyApp')-> accessToken;
-            $success['name'] =  $user->name;
+    {    //'password' => $request->password treba dodati pored email-a kada u tabeli imamo password
+        if(Auth::attempt(['email' => $request->email])){
+            $employee = Auth::employee();
+            $success['token'] =  $employee->createToken('MyApp')-> accessToken;
+            $success['name'] =  $employee->name;
 
-            return $this->sendResponse($success, 'User login successfully.');
+            return $this->sendResponse($success, 'Employee login successfully.');
         }
         else{
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
