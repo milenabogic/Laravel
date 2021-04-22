@@ -34,24 +34,25 @@ class TimeSheetsController extends BaseController
      //   $input['password'] = bcrypt($input['password']); nemamo password i ne mozemo ga koristiti
         $input['token'] = Str::random(100);
 
-        $employee = Employees::create($input);
+        $timesheet = Timesheets::create($input);
 
-        return $this->sendResponse(['token' => $employee->token], "Employee created");
+        return $this->sendResponse(['token' => $timesheet->token], "Timesheet created");
     }
 
     public function login(Request $request)
     {    //'password' => $request->password treba dodati pored email-a kada u tabeli imamo password
         if(Auth::attempt(['email' => $request->email])){
-            $employee = Auth::employee();
-            $employee['token'] =  $employee->createToken('MyApp')-> accessToken;
-            $employee['name'] =  $employee->name;
+            $timesheet = Auth::timesheet();
+            $timesheet['token'] =  $timesheet->createToken('MyApp')-> accessToken;
+            $timesheet['name'] =  $timesheet->name;
 
-            return $this->sendResponse($success, 'Employee login successfully.');
+            return $this->sendResponse($success, 'Timesheet login successfully.');
         }
         else{
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         }
     }
+    /*
     public function index()
     {
         $time_sheets = TimeSheets::all();
@@ -114,4 +115,5 @@ class TimeSheetsController extends BaseController
    
         return $this->sendResponse([], 'TimeSheets deleted successfully.');
     }
+    */
 }

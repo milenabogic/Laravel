@@ -50,6 +50,7 @@ class ProjectsController extends BaseController
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         }
     }
+    /*
     public function index()
     {
         $products = Products::all();
@@ -112,4 +113,5 @@ class ProjectsController extends BaseController
    
         return $this->sendResponse([], 'Projects deleted successfully.');
     }
+    */
 }

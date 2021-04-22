@@ -20,7 +20,7 @@ class ClientsController extends BaseController
             'email' => 'required|email',
             'status' => 'required',
             'role' => 'required',
-            'hours_per_week' => 'required'
+            'hours_per_week' => 'required'      
         ]);
 
     
@@ -50,7 +50,8 @@ class ClientsController extends BaseController
         else{
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         }
-    }
+    } 
+    /*
     public function index()
     {
         $clients = Clients::all();
@@ -112,5 +113,5 @@ class ClientsController extends BaseController
         $clients->delete();
    
         return $this->sendResponse([], 'Clients deleted successfully.');
-    }
+    } */
 }

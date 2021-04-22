@@ -25,8 +25,8 @@ use App\Http\Controllers\API\UserController;
 
 Route::post('employee', [EmployeesController::class, 'register']);
 //Route::post('login', [EmployeesController::class, 'login']);
-Route::post('client', [EmployeesController::class, 'register']);
-//Route::post('project', [EmployeesController::class, 'register']);
+Route::post('client', [ClientsController::class, 'register']);
+Route::post('project', [ProjectsController::class, 'register']);
 
 
 Route::middleware('custom_auth')->group(function () {
