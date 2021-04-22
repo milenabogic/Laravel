@@ -20,11 +20,13 @@ use App\Http\Controllers\API\UserController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('register', [RegisterController::class, 'register']);
-Route::post('login', [RegisterController::class, 'login']);
+//Route::post('register', [RegisterController::class, 'register']);
+//Route::post('login', [RegisterController::class, 'login']);
 
-Route::post('register', [EmployeesController::class, 'register']);
+Route::post('employee', [EmployeesController::class, 'register']);
 Route::post('login', [EmployeesController::class, 'login']);
+
+
 
 Route::middleware('custom_auth')->group(function () {
     Route::get('/projects', function () {
