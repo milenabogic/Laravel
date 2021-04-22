@@ -16,7 +16,7 @@ class ProjectsController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'project' => 'required',
-            'nema_client' => 'required',
+            'name_client' => 'required',
             'name_employee' => 'required',
             'status_project' => 'required',
             'archived_project' => 'required',
