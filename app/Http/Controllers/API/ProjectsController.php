@@ -5,11 +5,51 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Projects;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Validator;
 use App\Http\Resources\Projects as ClientsResource;
    
 class ProjectsController extends BaseController
 {
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'project' => 'required',
+            'nema_client' => 'required',
+            'name_employee' => 'required',
+            'status_project' => 'required',
+            'archived_project' => 'required',
+        ]);
+
+    
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $input = $request->all();
+
+     //   $input['password'] = bcrypt($input['password']); nemamo password i ne mozemo ga koristiti
+        $input['token'] = Str::random(100);
+
+        $project = Projects::create($input);
+
+        return $this->sendResponse(['token' => $project->token], "Project created");
+    }
+
+    public function login(Request $request)
+    {    //'password' => $request->password treba dodati pored email-a kada u tabeli imamo password
+        if(Auth::attempt(['email' => $request->email])){
+            $project = Auth::project();
+            $project['token'] =  $project->createToken('MyApp')-> accessToken;
+            $project['name'] =  $project->name;
+
+            return $this->sendResponse($success, 'Project login successfully.');
+        }
+        else{
+            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+        }
+    }
     public function index()
     {
         $products = Products::all();

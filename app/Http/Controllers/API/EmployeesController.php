@@ -8,7 +8,7 @@ use App\Models\Employees;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Validator;
-//use App\Http\Resources\Employees as EmployeesResource;
+use App\Http\Resources\Employees as EmployeesResource;
    
 class EmployeesController extends BaseController
 {
