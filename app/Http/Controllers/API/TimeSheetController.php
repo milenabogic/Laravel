@@ -34,9 +34,9 @@ class TimeSheetsController extends BaseController
      //   $input['password'] = bcrypt($input['password']); nemamo password i ne mozemo ga koristiti
         $input['token'] = Str::random(100);
 
-        $timesheet = Timesheets::create($input);
+        $timesheet = TimeSheets::create($input);
 
-        return $this->sendResponse(['token' => $timesheet->token], "Timesheet created");
+        return $this->sendResponse(['token' => $timesheet->token], "TimeSheet created");
     }
 
     public function login(Request $request)
@@ -46,7 +46,7 @@ class TimeSheetsController extends BaseController
             $timesheet['token'] =  $timesheet->createToken('MyApp')-> accessToken;
             $timesheet['name'] =  $timesheet->name;
 
-            return $this->sendResponse($success, 'Timesheet login successfully.');
+            return $this->sendResponse($success, 'TimeSheet login successfully.');
         }
         else{
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);

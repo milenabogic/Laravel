@@ -27,6 +27,8 @@ Route::post('employee', [EmployeesController::class, 'register']);
 //Route::post('login', [EmployeesController::class, 'login']);
 Route::post('client', [ClientsController::class, 'register']);
 Route::post('project', [ProjectsController::class, 'register']);
+Route::post('timesheet', [TimeSheetsController::class, 'register']);
+
 
 
 Route::middleware('custom_auth')->group(function () {
