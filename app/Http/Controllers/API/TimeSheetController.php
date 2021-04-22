@@ -8,7 +8,7 @@ use App\Models\TimeSheets;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Validator;
-use App\Http\Resources\TimeSheets as ClientsResource;
+use App\Http\Resources\TimeSheets as TimeSheetsResource;
    
 class TimeSheetsController extends BaseController
 {

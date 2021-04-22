@@ -8,7 +8,7 @@ use App\Models\Projects;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Validator;
-use App\Http\Resources\Projects as ClientsResource;
+use App\Http\Resources\Projects as ProjectsResource;
    
 class ProjectsController extends BaseController
 {
