@@ -51,4 +51,17 @@ class EmployeesController extends BaseController
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         }
     }
+
+    public function show() 
+    {
+       return (
+           $id
+          /* $name
+           $username
+           $email
+           $status
+           $role
+           $hours_per_week */
+       )
+    }
 }

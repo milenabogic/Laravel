@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use Validator;
 use App\Http\Resources\TimeSheets as TimeSheetsResource;
    
-class TimeSheetsController extends BaseController
+class TimeSheetController extends BaseController
 {
     public function register(Request $request)
     {
