@@ -12,30 +12,43 @@ use App\Http\Resources\Employees as EmployeesResource;
    
 class EmployeesController extends BaseController
 {
-    public function register(Request $request)
+    public function insert() {
+        $urlData = getURLList();
+        return view('employee_create');
+    }
+
+    public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'username' => 'required',
-            'email' => 'required|email',
-            'status' => 'required',
-            'role' => 'required',
-            'hours_per_week' => 'required'
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'status' => 'required|string',
+            'role' => 'required|string',
+            'hours_per_week' => 'required',
+            "token" => 'string'
         ]);
 
-    
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $input = $request->all();
-
-     //   $input['password'] = bcrypt($input['password']); nemamo password i ne mozemo ga koristiti
-        $input['token'] = Str::random(100);
-
+       try {
+        $input = $request->all();   
         $employee = Employees::create($input);
-
-        return $this->sendResponse(['token' => $employee->token], "Employee created");
+        if($employee->save()) {
+            error_log('The employee was successfully created.');
+        }
+        $employee->token = Str::random(100);
+        if($employee->token) {
+            error_log("Token is: " .$employee->token);
+        }
+        return $this->sendResponse(['token' => $employee->token], "The employee was successfully created: " .$employee->name);
+        }
+        catch(\Exception $e){
+            error_log('Problem. The employee is can not be created.');
+            echo $e->getMessage();  
+         }
     }
 
     public function login(Request $request)
@@ -52,16 +65,17 @@ class EmployeesController extends BaseController
         }
     }
 
-    public function show() 
-    {
-       return (
-           $id
-          /* $name
-           $username
-           $email
-           $status
-           $role
-           $hours_per_week */
-       )
+   /* public function list_all_employees() {
+        return Employees::all(); // vraca kolekciju, navodi sve kolone iz tabele
+    }*/
+
+    public function one_employee($id) {
+        return Employees::find($id);
     }
+
+    public function search($name) {
+        return Employees::where("name" ,$name)->get();
+    }
+
+    
 }

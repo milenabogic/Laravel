@@ -23,7 +23,12 @@ use App\Http\Controllers\API\UserController;
 //Route::post('register', [RegisterController::class, 'register']);
 //Route::post('login', [RegisterController::class, 'login']);
 
-Route::post('employee', [EmployeesController::class, 'register']);
+Route::post('employee', [EmployeesController::class, 'create']);
+//Route::get('employee', [EmployeesController::class, 'list_all_employees']);
+Route::get('employee/{id}', [EmployeesController::class, 'one_employee']);
+Route::get('search/{name}', [EmployeesController::class, 'search']);
+
+
 //Route::post('login', [EmployeesController::class, 'login']);
 Route::post('client', [ClientsController::class, 'register']);
 Route::post('project', [ProjectsController::class, 'register']);
@@ -31,10 +36,10 @@ Route::post('timesheet', [TimeSheetController::class, 'register']);
 
 
 
-Route::middleware('custom_auth')->group(function () {
+
+/*Route::middleware('custom_auth')->group(function () {
     Route::get('/projects', function () {
         return "Uspesno!";
     });
 });
-
-
+*/
