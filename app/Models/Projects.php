@@ -10,6 +10,6 @@ class Projects extends Model
     use HasFactory;
     
     protected $fillable = [
-        'project', 'client', 'employee', 'status', 'archived'
+        'project', 'name_client', 'name_employee', 'status_project', 'archived_project', 'employee_id', 'client_id'
     ];
 }

@@ -24,6 +24,7 @@ class CreateTimeSheetsTable extends Migration
             $table->double('total_time');
             $table->date('date');
             $table->string('user');
+            $table->timestamps();
         });
     }
 

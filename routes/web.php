@@ -25,3 +25,6 @@ Route::get('/new', function () {
 //Route::get('/', 'EmployeesController@list_all_employees');
 Route::get('/', 'EmployeesController@one_employee');
 Route::post('/', 'EmployeesController@create');
+Route::put('/', 'EmployeesController@update');
+Route::delete('/', 'EmployeesController@delete');
+

@@ -35,7 +35,7 @@ class RegisterController extends BaseController
         return $this->sendResponse(['token' => $project->token], "Project created");
     }
 
-    /*public function login(Request $request)
+    public function login(Request $request)
     {    //'password' => $request->password treba dodati pored email-a kada u tabeli imamo password
         if(Auth::attempt(['email' => $request->email])){
             $client = Auth::client();
@@ -47,5 +47,5 @@ class RegisterController extends BaseController
         else{
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
         }
-    }*/
+    }
 }

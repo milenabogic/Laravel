@@ -12,9 +12,10 @@ use App\Http\Resources\Projects as ProjectsResource;
    
 class ProjectsController extends BaseController
 {
-    public function register(Request $request)
-    {
+    public function create(Request $request) {
         $validator = Validator::make($request->all(), [
+            'employee_id' => 'required',
+            'client_id' => 'required',
             'project' => 'required',
             'name_client' => 'required',
             'name_employee' => 'required',
@@ -22,96 +23,61 @@ class ProjectsController extends BaseController
             'archived_project' => 'required',
         ]);
 
-    
-        if($validator->fails()){
+        if($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
         $input = $request->all();
-
-     //   $input['password'] = bcrypt($input['password']); nemamo password i ne mozemo ga koristiti
         $input['token'] = Str::random(100);
-
         $project = Projects::create($input);
 
         return $this->sendResponse(['token' => $project->token], "Project created");
     }
 
-    public function login(Request $request)
-    {    //'password' => $request->password treba dodati pored email-a kada u tabeli imamo password
-        if(Auth::attempt(['email' => $request->email])){
-            $project = Auth::project();
-            $project['token'] =  $project->createToken('MyApp')-> accessToken;
-            $project['name'] =  $project->name;
+    public function list_all_projects() {
+        return Projects::all();
+    }
 
-            return $this->sendResponse($success, 'Project login successfully.');
+    public function one_project($id) {
+        return Projects::find($id);
+    }
+
+    public function search($project) {
+        return Projects::where("project" ,$project)->get();
+    }
+
+    public function update (Request $request) {
+
+        $project = Projects::find($request->id);
+        $project->project = $request->project;
+        $project->employee_id = $request->employee_id;
+        $project->client_id = $request->client_id;
+        $project->name_client = $request->name_client;
+        $project->name_employee = $request->name_employee;
+        $project->status_project = $request->status_project;
+        $project->archived_project = $request->archived_project;
+        $result = $project->save();
+
+        if($result) {
+            return ["result" => "Data has been updated."];
         }
-        else{
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+
+        else {
+            return ["result" => "Data hasn't been updated."];
         }
     }
-    /*
-    public function index()
-    {
-        $products = Products::all();
+
+    public function delete ($id) {
+        $project = Projects::find($id);
+        $result = $project->delete();
+
+        if($result) {
+            return ["result" => "Project has been deleted."];
+        }
+
+        else {
+            return ["result" => "Error. Project hasn't been deleted."];
+        }
+    }
     
-        return $this->sendResponse(ProductsResource::collection($products), 'Products retrieved successfully.');
-    }
-    
-    public function store(Request $request)
-    {
-        $input = $request->all();
-   
-        $validator = Validator::make($input, [
-            'name' => 'required',
-            'detail' => 'required'
-        ]);
-   
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
-        }
-   
-        $projects = Projects::create($input);
-   
-        return $this->sendResponse(new ProjectsResource($projects), 'Projects created successfully.');
-    } 
-   
-    public function show($id)
-    {
-        $projects = Projects::find($id);
-  
-        if (is_null($projects)) {
-            return $this->sendError('Projects not found.');
-        }
-   
-        return $this->sendResponse(new ProjectsResource($projects), 'Projects retrieved successfully.');
-    }
-    
-    public function update(Request $request, Projects $projects)
-    {
-        $input = $request->all();
-   
-        $validator = Validator::make($input, [
-            'name' => 'required',
-            'detail' => 'required'
-        ]);
-   
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
-        }
-   
-        $projects->name = $input['name'];
-        $projects->detail = $input['detail'];
-        $projects->save();
-   
-        return $this->sendResponse(new ProjectsResource($projects), 'Projects updated successfully.');
-    }
-   
-    public function destroy(Projects $projects)
-    {
-        $projects->delete();
-   
-        return $this->sendResponse([], 'Projects deleted successfully.');
-    }
-    */
 }

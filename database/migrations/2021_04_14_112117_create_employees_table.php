@@ -21,6 +21,7 @@ class CreateEmployeesTable extends Migration
             $table->string('status');
             $table->string('role');
             $table->double('hours_per_week');
+            $table->string('token')->nullable();
             $table->timestamps();
         });
     }

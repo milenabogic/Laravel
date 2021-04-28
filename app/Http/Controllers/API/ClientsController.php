@@ -12,106 +12,69 @@ use App\Http\Resources\Clients as ClientsResource;
    
 class ClientsController extends BaseController
 {
-    public function register(Request $request)
-    {
+    public function create(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'username' => 'required',
-            'email' => 'required|email',
-            'status' => 'required',
-            'role' => 'required',
-            'hours_per_week' => 'required'      
+            'address' => 'required',
+            'city' => 'required',
+            'post_code' => 'required',
+            'state' => 'required',      
         ]);
 
-    
-        if($validator->fails()){
+        if($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
         $input = $request->all();
-
-     //   $input['password'] = bcrypt($input['password']); nemamo password i ne mozemo ga koristiti
         $input['token'] = Str::random(100);
-
         $client = Clients::create($input);
-
         return $this->sendResponse(['token' => $client->token], "Client created");
     }
 
-    public function login(Request $request)
-    {    //'password' => $request->password treba dodati pored email-a kada u tabeli imamo password
-        if(Auth::attempt(['email' => $request->email])){
-            $client = Auth::client();
-            $client['token'] =  $client->createToken('MyApp')-> accessToken;
-            $client['name'] =  $client->name;
+    public function list_all_clients() {
+        return Clients::all();
+    }
+    
+    public function show_one_client($id) {
+        return Clients::find($id);
+    }
 
-            return $this->sendResponse($success, 'Employee login successfully.');
-        }
-        else{
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
-        }
-    } 
-    /*
-    public function index()
-    {
-        $clients = Clients::all();
-    
-        return $this->sendResponse(ClientsResource::collection($clients), 'Clients retrieved successfully.');
+    public function search($name) {
+        return Clients::where("name" ,$name)->get();
     }
     
-    public function store(Request $request)
-    {
-        $input = $request->all();
-   
-        $validator = Validator::make($input, [
-            'name' => 'required',
-            'detail' => 'required'
-        ]);
-   
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+    public function update (Request $request) {
+
+        $client = Clients::find($request->id);
+        $client->name = $request->name;
+        $client->address = $request->address;
+        $client->city = $request->city;
+        $client->post_code = $request->post_code;
+        $client->state = $request->state;
+        $result = $client->save();
+
+        if($result) {
+            return ["result" => "Data has been updated."];
         }
-   
-        $clients = Clients::create($input);
-   
-        return $this->sendResponse(new ClientsResource($clients), 'Clients created successfully.');
-    } 
-   
-    public function show($id)
-    {
-        $clients = Clients::find($id);
-  
-        if (is_null($clients)) {
-            return $this->sendError('Clients not found.');
+
+        else {
+            return ["result" => "Data hasn't been updated."];
         }
-   
-        return $this->sendResponse(new ClientsResource($clients), 'Clients retrieved successfully.');
+    }
+
+    public function delete ($id) {
+        $client = Clients::find($id);
+        $result = $client->delete();
+
+        if($result) {
+            return ["result" => "Client has been deleted."];
+        }
+
+        else {
+            return ["result" => "Error. Client hasn't been deleted."];
+        }
     }
     
-    public function update(Request $request, Clients $clients)
-    { 
-        $input = $request->all();
    
-        $validator = Validator::make($input, [
-            'name' => 'required',
-            'detail' => 'required'
-        ]);
-   
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
-        }
-   
-        $clients->name = $input['name'];
-        $clients->detail = $input['detail'];
-        $clients->save();
-   
-        return $this->sendResponse(new ClientsResource($clients), 'Clients updated successfully.');
-    }
-   
-    public function destroy(Clients $clients)
-    {
-        $clients->delete();
-   
-        return $this->sendResponse([], 'Clients deleted successfully.');
-    } */
+    
 }

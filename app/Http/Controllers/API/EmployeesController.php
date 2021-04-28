@@ -17,8 +17,7 @@ class EmployeesController extends BaseController
         return view('employee_create');
     }
 
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255',
@@ -26,48 +25,38 @@ class EmployeesController extends BaseController
             'status' => 'required|string',
             'role' => 'required|string',
             'hours_per_week' => 'required',
-            "token" => 'string'
+            'token' => 'string'
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
-
-       try {
+       
         $input = $request->all();   
         $employee = Employees::create($input);
-        if($employee->save()) {
-            error_log('The employee was successfully created.');
-        }
+        $employee->save();
         $employee->token = Str::random(100);
-        if($employee->token) {
-            error_log("Token is: " .$employee->token);
-        }
+        
         return $this->sendResponse(['token' => $employee->token], "The employee was successfully created: " .$employee->name);
-        }
-        catch(\Exception $e){
-            error_log('Problem. The employee is can not be created.');
-            echo $e->getMessage();  
-         }
-    }
+        } 
+    
 
-    public function login(Request $request)
-    {    //'password' => $request->password treba dodati pored email-a kada u tabeli imamo password
-        if(Auth::attempt(['email' => $request->email])){
+    public function login(Request $request) {
+        if(Auth::attempt(['email' => $request->email])) {
             $employee = Auth::employee();
             $employee['token'] =  $employee->createToken('MyApp')-> accessToken;
             $employee['name'] =  $employee->name;
-
             return $this->sendResponse($success, 'Employee login successfully.');
-        }
-        else{
+            }
+
+        else {
             return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
-        }
+            }
     }
 
-   /* public function list_all_employees() {
-        return Employees::all(); // vraca kolekciju, navodi sve kolone iz tabele
-    }*/
+    public function list_all_employees() {
+        return Employees::all();
+    }
 
     public function one_employee($id) {
         return Employees::find($id);
@@ -77,5 +66,38 @@ class EmployeesController extends BaseController
         return Employees::where("name" ,$name)->get();
     }
 
+    public function update (Request $request) {
+
+        $employee = Employees::find($request->id);
+        $employee->name = $request->name;
+        $employee->username = $request->username;
+        $employee->email = $request->email;
+        $employee->status = $request->status;
+        $employee->role = $request->role;
+        $employee->hours_per_week = $request->hours_per_week;
+        $result = $employee->save();
+
+        if($result) {
+            return ["result" => "Data has been updated."];
+        }
+
+        else {
+            return ["result" => "Data hasn't been updated."];
+        }
+    }
+
+    public function delete ($id) {
+        $employee = Employees::find($id);
+        $result = $employee->delete();
+
+        if($result) {
+            return ["result" => "Employee has been deleted."];
+        }
+
+        else {
+            return ["result" => "Error. Employee hasn't been deleted."];
+        }
+    }
     
-}
+  }
+

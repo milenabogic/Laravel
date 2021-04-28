@@ -10,7 +10,6 @@ class TimeSheets extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'project', 'description', 'hours_per_week', 
-        'total_time', 'date', 'user'
+       'employee_id', 'client_id', 'project_id', 'name_client', 'project', 'description', 'hours_per_week', 'total_time', 'date', 'user'
     ];
 }
