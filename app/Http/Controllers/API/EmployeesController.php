@@ -24,23 +24,24 @@ class EmployeesController extends BaseController
             'email' => 'required|string|email|max:255',
             'status' => 'required|string',
             'role' => 'required|string',
-            'hours_per_week' => 'required',
+            'hours_per_week' => 'required|numeric',
             'token' => 'string'
         ]);
 
-        if($validator->fails()){
+        if($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
-       
+    
         $input = $request->all();   
         $employee = Employees::create($input);
         $employee->save();
         $employee->token = Str::random(100);
-        
-        return $this->sendResponse(['token' => $employee->token], "The employee was successfully created: " .$employee->name);
-        } 
-    
 
+        if ($employee->exists()) {
+            return(new EmployeesResource($employee))->response()->setStatusCode(201);
+        }
+    } 
+    
     public function login(Request $request) {
         if(Auth::attempt(['email' => $request->email])) {
             $employee = Auth::employee();

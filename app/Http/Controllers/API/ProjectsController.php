@@ -14,13 +14,13 @@ class ProjectsController extends BaseController
 {
     public function create(Request $request) {
         $validator = Validator::make($request->all(), [
-            'employee_id' => 'required',
-            'client_id' => 'required',
-            'project' => 'required',
-            'name_client' => 'required',
-            'name_employee' => 'required',
-            'status_project' => 'required',
-            'archived_project' => 'required',
+            'employee_id' => 'required|numeric',
+            'client_id' => 'required|numeric',
+            'project' => 'required|string|max:255',
+            'name_client' => 'required|string|max:255',
+            'name_employee' => 'required|string|max:255',
+            'status_project' => 'required|string|max:8',
+            'archived_project' => 'required|string|max:12',
         ]);
 
         if($validator->fails()) {
@@ -28,10 +28,11 @@ class ProjectsController extends BaseController
         }
 
         $input = $request->all();
-        $input['token'] = Str::random(100);
         $project = Projects::create($input);
 
-        return $this->sendResponse(['token' => $project->token], "Project created");
+        if ($project->exists()) {
+            return(new ProjectsResource($project))->response()->setStatusCode(201);
+        }
     }
 
     public function list_all_projects() {

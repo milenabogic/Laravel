@@ -8,34 +8,34 @@ use App\Models\TimeSheets;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Validator;
-use App\Http\Resources\TimeSheets as TimeSheetsResource;
+use App\Http\Resources\TimeSheet as TimeSheetsResource;
    
 class TimeSheetController extends BaseController
 {
     public function create(Request $request) {
         $validator = Validator::make($request->all(), [
-            'employee_id' => 'required',
-            'client_id' => 'required',
-            'project_id' => 'required',
-            'name_client' => 'required',
-            'project' => 'required',
-            'description' => 'required',
-            'hours_per_week' => 'required',
-            'total_time' => 'required',
-            'date' => 'required',
-            'user' => 'required'
+            'employee_id' => 'required|numeric',
+            'client_id' => 'required|numeric',
+            'project_id' => 'required|numeric',
+            'name_client' => 'required|string|max:255',
+            'project' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'hours_per_week' => 'required|numeric',
+            'total_time' => 'required|numeric',
+            'date' => 'required|date',
+            'user' => 'required|string|max:255'
         ]);
 
-    
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
         $input = $request->all();
-        $input['token'] = Str::random(100);
         $timesheet = TimeSheets::create($input);
 
-        return $this->sendResponse(['token' => $timesheet->token], "TimeSheet created");
+        if ($timesheet->exists()) {
+            return(new TimeSheetResource($timesheet))->response()->setStatusCode(201);
+        }
     }
 
     

@@ -14,11 +14,11 @@ class ClientsController extends BaseController
 {
     public function create(Request $request) {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'address' => 'required',
-            'city' => 'required',
-            'post_code' => 'required',
-            'state' => 'required',      
+            'name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'post_code' => 'required|numeric',
+            'state' => 'required|string|max:255',      
         ]);
 
         if($validator->fails()) {
@@ -26,9 +26,11 @@ class ClientsController extends BaseController
         }
 
         $input = $request->all();
-        $input['token'] = Str::random(100);
         $client = Clients::create($input);
-        return $this->sendResponse(['token' => $client->token], "Client created");
+
+        if ($client->exists()) {
+            return(new ClientsResource($client))->response()->setStatusCode(201);
+        }
     }
 
     public function list_all_clients() {
