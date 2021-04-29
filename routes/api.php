@@ -32,6 +32,6 @@ Route::put('update_project', [ProjectsController::class, 'update']);
 Route::delete('delete_project/{id}', [ProjectsController::class, 'delete']);
 
 Route::post('create_timesheet', [TimeSheetController::class, 'create']);
-
+Route::put('update_timesheet', [TimesheetController::class, 'update']);
 
 

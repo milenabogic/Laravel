@@ -34,10 +34,33 @@ class TimeSheetController extends BaseController
         $timesheet = TimeSheets::create($input);
 
         if ($timesheet->exists()) {
-            return(new TimeSheetResource($timesheet))->response()->setStatusCode(201);
+            return(new TimeSheetsResource($timesheet))->response()->setStatusCode(201);
         }
     }
 
+    public function update (Request $request) {
+
+        $timesheet = TimeSheets::find($request->project);
+        $timesheet->employee_id = $request->employee_id;
+        $timesheet->client_id = $request->client_id;
+        $timesheet->project_id = $request->project_id;
+        $timesheet->name_client = $request->name_client;
+        $timesheet->project = $request->project;
+        $timesheet->description = $request->description;
+        $timesheet->hours_per_week = $request->hours_per_week;
+        $timesheet->total_time = $request->total_time;
+        $timesheet->date = $request->date;
+        $timesheet->use = $request->user;
+        $timesheet = $employee->save();
+
+        if($result) {
+            return ["result" => "Data has been updated."];
+        }
+
+        else {
+            return ["result" => "Data hasn't been updated."];
+        }
+    }
     
     
 
